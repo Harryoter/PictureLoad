@@ -20,6 +20,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    boolean threadFlag = false;
+
     private int mCount=1;
 
     private MyRecyclerAdapter adapter;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
 
         new Thread(runnalbe).start();
-        Log.d(TAG, jsonData+"11");
+        threadFlag = true;
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
@@ -57,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isSlideToBottom(recyclerView)){
+                if (isSlideToBottom(recyclerView)&&!threadFlag){
                     new Thread(runnalbe).start();
+                    Log.d(TAG, "onScrolled: "+"Thread Started");
+                    threadFlag = true;
                 }
             }
         });
@@ -76,11 +80,13 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
+                threadFlag = false;
                 RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);
                 adapter = new MyRecyclerAdapter(list);
                 recyclerView.setAdapter(adapter);
             }else if (msg.what == 2){
+                threadFlag = false;
                 adapter.notifyDataSetChanged();
             }
         }
@@ -106,9 +112,11 @@ public class MainActivity extends AppCompatActivity {
                         list.add(bm);
                     }else {
                         bm = GetBitmap.getBitmap(url);
-                        bm = GetBitmap.reverseBitmapSize(MainActivity.this,bm);
-                        list.add(bm);
-                        imageLoader.addBitmapToMemoryCache(id,bm);
+                        if (bm!=null){
+                            bm = GetBitmap.reverseBitmapSize(MainActivity.this,bm);
+                            list.add(bm);
+                            imageLoader.addBitmapToMemoryCache(id,bm);
+                        }
                     }
                 }
 
