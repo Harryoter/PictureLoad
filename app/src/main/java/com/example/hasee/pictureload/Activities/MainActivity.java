@@ -1,4 +1,4 @@
-package com.example.hasee.pictureload;
+package com.example.hasee.pictureload.Activities;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 
 import com.example.hasee.pictureload.Adapter.MyRecyclerAdapter;
+import com.example.hasee.pictureload.R;
 import com.example.hasee.pictureload.Utility.GetBitmap;
 import com.example.hasee.pictureload.Utility.ImageLoader;
 import com.example.hasee.pictureload.Utility.ParseJsonWithHttpURLConnection;
